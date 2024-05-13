@@ -5,24 +5,24 @@ import { useConfirmModal } from "../../stores/useConfirmModal";
 import TextParser from "../TextParser";
 
 const ConfirmModal = () => {
-  const { text, clickNo, clickYes } = useConfirmModal();
+  const { content, yesButtonText, noButtonText, clickYesButton, clickNoButton } = useConfirmModal();
+
+  if (!content){
+    return <></>
+  }
 
   return (
-    <>
-      {text && (
-        <Container>
-          <TextParser text={text} />
-          <RowLayout>
-            <Button type="button" onClick={clickNo}>
-              취소
-            </Button>
-            <Button type="button" onClick={clickYes}>
-              확인
-            </Button>
-          </RowLayout>
-        </Container>
-      )}
-    </>
+    <Container>
+      <TextParser text={content} />
+      <RowLayout>
+        <Button type="button" onClick={clickNoButton}>
+          {noButtonText}
+        </Button>
+        <Button type="button" onClick={clickYesButton}>
+          {yesButtonText}
+        </Button>
+      </RowLayout>
+    </Container>
   );
 };
 

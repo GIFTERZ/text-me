@@ -38,8 +38,11 @@ const DanfestaRoom = () => {
   };
 
   const confirmOpen = async () => {
+
     // 먼저 3개 아직 다 찼는지 확인
-    const confirm = await openConfirmModal({ text: "차감됩니다." });
+    const confirm = await openConfirmModal({ content: "편지를 열면 열 수 있는 편지 개수가 차감돼요. 열람하시겠어요?\n(현재 열람 가능 편지 수: 3)", 
+      yesButtonText: "열기"
+     });
     if (!confirm) {
       return false;
     }

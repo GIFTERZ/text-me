@@ -28,3 +28,13 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* 빛의 계승자 */
+
+@font-face {
+  font-family: "HeirofLight";
+  src: url("HeirofLightBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
