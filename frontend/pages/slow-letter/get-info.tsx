@@ -16,14 +16,14 @@ const PROCESS = {
   ADDRESS: "ADDRESS",
 };
 
-function getInfo() {
+function GetInfo() {
   const [process, setProcess] = useState(PROCESS.SELECT);
   const router = useRouter();
 
   switch (process) {
     case PROCESS.SELECT:
       return (
-        <BackgroundTemplate>
+        <BackgroundTemplate imageUrl="/static/images/room-background.webp">
           <SlowBackHeader onBackClick={() => router.push("/slow-letter")} />
           <SelectMethod
             selectMail={() => setProcess(PROCESS.EMAIL)}
@@ -33,7 +33,7 @@ function getInfo() {
       );
     case PROCESS.EMAIL:
       return (
-        <BackgroundTemplate>
+        <BackgroundTemplate imageUrl="/static/images/room-background.webp">
           <SlowBackHeader onBackClick={() => setProcess(PROCESS.SELECT)} />
           <EmailForm
             complete={() => router.push("/slow-letter/write?type=email")}
@@ -42,14 +42,14 @@ function getInfo() {
       );
     case PROCESS.POSTCODE:
       return (
-        <BackgroundTemplate>
+        <BackgroundTemplate imageUrl="/static/images/room-background.webp">
           <SlowBackHeader onBackClick={() => setProcess(PROCESS.SELECT)} />
           <PostCodeForm complete={() => setProcess(PROCESS.ADDRESS)} />
         </BackgroundTemplate>
       );
     case PROCESS.ADDRESS:
       return (
-        <BackgroundTemplate>
+        <BackgroundTemplate imageUrl="/static/images/room-background.webp">
           <SlowBackHeader onBackClick={() => setProcess(PROCESS.POSTCODE)} />
           <AddressForm
             complete={() => router.push("/slow-letter/write?type=post")}
@@ -59,7 +59,7 @@ function getInfo() {
   }
 }
 
-export default getInfo;
+export default GetInfo;
 
 export const SelectContainer = styled.div`
   width: 100%;

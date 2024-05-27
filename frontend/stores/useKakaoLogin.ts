@@ -32,7 +32,6 @@ const useKakaoLogin = create<KakaoLogin>((set) => ({
         } = res;
         setAccessToken(accessToken, createdAt);
         setRefreshToken(refreshToken);
-        console.log("here?");
         complete();
       })
       .catch((error) => {

@@ -1,37 +1,26 @@
-import { useSearchParams } from "next/navigation";
-import { useMembers } from "../../stores/useMembers";
 import React, { Fragment, useEffect, useState } from "react";
-import { useLetterView } from "../../stores/useLetterView";
-import { Letter } from "../../types";
-import { useAlertModal } from "../../stores/useAlertModal";
 import { useCaptureMode } from "../../stores/useCaptureMode";
 import { LETTER_PROPS } from "./BackgroundLetterProps";
 import BackgroundLetter from "./BackgroundLetter";
 import uuid from "react-uuid";
 import Head from "next/head";
 import PreloadCardLink from "../common/PreloadCardLink";
+import { LetterInfo } from "../../types";
+
 interface Props {
-  letters: Letter[];
+  letters: LetterInfo[];
   backgroundImage: string;
   defaultCardImage: string;
-  userId: string;
+  openLetter: (id: string) => void;
 }
 function Background({
   letters,
   backgroundImage,
   defaultCardImage,
-  userId,
+  openLetter,
 }: Props) {
-  const { open } = useLetterView();
-  const { member, getMember } = useMembers();
-  const { toggleAlertModalOpen, toggleEmptyLetterModalOpen } = useAlertModal();
   const { isCaptureMode } = useCaptureMode();
-
   const [width, setWidth] = useState(0);
-
-  useEffect(() => {
-    getMember();
-  }, []);
 
   useEffect(() => {
     let newWidth = window.innerHeight * (1560 / 844);
@@ -51,7 +40,7 @@ function Background({
     });
   }, []);
 
-  const checkAuthOpen = (e: any) => {
+  const onLetterClick = async (e: any) => {
     const {
       target: {
         parentElement: { id },
@@ -62,19 +51,7 @@ function Background({
       return;
     }
 
-    if (member === null || member?.id !== userId) {
-      toggleAlertModalOpen();
-      return;
-    }
-
-    if (member.id === userId) {
-      if (letters[Number(id)]) {
-        open(letters[Number(id)].id);
-      } else {
-        toggleEmptyLetterModalOpen();
-        return;
-      }
-    }
+    openLetter(id);
   };
 
   return (
@@ -107,7 +84,7 @@ function Background({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
-        onClick={checkAuthOpen}
+        onClick={onLetterClick}
       >
         <rect
           id="back"

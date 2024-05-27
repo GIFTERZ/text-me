@@ -1,10 +1,11 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { create } from "zustand";
-import visitorApi from "../auth/visitorApi";
 import { PATH } from "../constants/api";
+import api from "../auth/api";
+import { CustomError } from "../types/api";
 
 type LetterBody = {
-  receiverId: string;
+  contactInfo: string;
   contents: string;
   senderName: string;
   imageUrl: string;
@@ -12,7 +13,7 @@ type LetterBody = {
 
 interface SendLetter {
   loading: boolean;
-  error: AxiosError | null;
+  error: AxiosError<CustomError> | null;
   sendLetter: (data: LetterBody, callback: () => void) => void;
 }
 
@@ -21,9 +22,10 @@ const useSendDanfestaLetter = create<SendLetter>((set) => ({
   error: null,
   sendLetter: async (data, callback) => {
     set({ loading: true });
-    await visitorApi
-      .post(PATH.LETTER.ROOT, data)
+    await api
+      .post(PATH.DKU.LETTER.EVENT, data)
       .then((res) => {
+        set({ error: null });
         callback();
       })
       .catch((error) => {

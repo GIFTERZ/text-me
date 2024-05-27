@@ -8,7 +8,7 @@ import Head from "next/head";
 import { HeaderLayout } from "../../../styles/components/Layout";
 import BackHeader from "../../../components/common/BackHeader";
 
-export default function index() {
+export default function PreviewCardPicture() {
   const router = useRouter();
   const userId = useSearchParams().get("uid");
   const { pictureUrl, setPictureUrl } = useCardPicture();

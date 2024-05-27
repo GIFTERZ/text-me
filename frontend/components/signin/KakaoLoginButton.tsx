@@ -22,7 +22,7 @@ function KakaoLoginButton({ complete }: Props) {
   }, []);
 
   const onKakaoClick = () => {
-    location.href = KAKAO_AUTH_URL;
+    window.location.href = KAKAO_AUTH_URL;
   };
 
   return (

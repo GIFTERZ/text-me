@@ -28,7 +28,7 @@ function Write() {
     if (userId) {
       getRoomInfo(userId);
     }
-  }, [searchParams]);
+  }, [searchParams, getRoomInfo]);
 
   switch (process) {
     case PROCESS.SELECT:

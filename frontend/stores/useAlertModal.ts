@@ -1,20 +1,21 @@
 import { create } from "zustand";
 
 interface AlertModal {
-  alertModalOpen: boolean;
-  toggleAlertModalOpen: () => void;
-  alertEmptyLetterModalOpen: boolean;
-  toggleEmptyLetterModalOpen: () => void;
+  text: string | null;
+  callback: () => void;
+  openAlertModal: (text: string, callback?: () => void) => void;
+  closeAlertModal: () => void;
 }
 
 const useAlertModal = create<AlertModal>((set, get) => ({
-  alertModalOpen: false,
-  alertEmptyLetterModalOpen: false,
-  toggleAlertModalOpen: () => {
-    set({ alertModalOpen: !get().alertModalOpen });
+  text: null,
+  callback: () => {},
+  openAlertModal: (text, callback = () => {}) => {
+    set({ text, callback });
   },
-  toggleEmptyLetterModalOpen: () => {
-    set({ alertEmptyLetterModalOpen: !get().alertEmptyLetterModalOpen });
+  closeAlertModal: () => {
+    set({ text: null });
+    get().callback();
   },
 }));
 

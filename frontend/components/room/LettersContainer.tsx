@@ -2,38 +2,37 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useCaptureMode } from "../../stores/useCaptureMode";
 import { useLetterPagination } from "../../stores/useLetterPagination";
-import { useLetters } from "../../stores/useLetters";
 import Background from "./Background";
 import LettersMove from "./LettersMove";
+import { useAlertModal } from "../../stores/useAlertModal";
+import { LetterInfo } from "../../types";
 
 interface Props {
-  userId: string;
+  letters: LetterInfo[];
   backgroundImage: string;
   defaultCardImage: string;
+  confirmOpen: () => Promise<boolean>;
+  open: (id: number) => void;
 }
 
 function LettersContainer({
-  userId,
+  letters,
   backgroundImage,
   defaultCardImage,
+  confirmOpen,
+  open,
 }: Props) {
   const PAGE_LETTER = 23;
 
   const { isCaptureMode } = useCaptureMode();
   const { pagination, setLastPage } = useLetterPagination();
-  const { error, letters, getLetters } = useLetters();
+  const { openAlertModal } = useAlertModal();
 
   useEffect(() => {
-    if (userId) {
-      getLetters(userId);
-    }
-  }, [userId]);
+    letters && setLastPage(Math.floor(letters.length / PAGE_LETTER));
+  }, [letters, setLastPage]);
 
-  useEffect(() => {
-    setLastPage(Math.floor(letters.length / PAGE_LETTER));
-  }, [letters]);
-
-  if (error) {
+  if (!letters) {
     return (
       <ErrorMessage>
         편지를 불러오는 중<br />
@@ -41,6 +40,20 @@ function LettersContainer({
       </ErrorMessage>
     );
   }
+
+  const openLetter = async (id: string) => {
+    if (!letters[Number(id)]) {
+      openAlertModal("아직 편지가 도착하지 않았어요!");
+      return;
+    }
+
+    const result = await confirmOpen();
+    if (!result) {
+      return;
+    }
+
+    open(letters[Number(id)].id);
+  };
 
   return (
     <Container isCaptureMode={isCaptureMode}>
@@ -52,7 +65,7 @@ function LettersContainer({
         )}
         backgroundImage={backgroundImage}
         defaultCardImage={defaultCardImage}
-        userId={userId}
+        openLetter={openLetter}
       />
     </Container>
   );

@@ -1,9 +1,15 @@
 interface Letter {
   id: number;
-  receiverName: string;
+  receiverName?: string;
   senderName: string;
   contents: string;
   imageUrl: string;
+  contactInfo?: string;
 }
 
-export type { Letter };
+interface LetterInfo {
+  id: number;
+  imageUrl: string;
+}
+
+export type { Letter, LetterInfo };

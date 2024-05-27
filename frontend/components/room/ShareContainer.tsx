@@ -9,7 +9,7 @@ function ShareContainer() {
   const openNativeShareDialog = () => {
     navigator.share({
       title: "공유하기",
-      url: location.href,
+      url: window.location.href,
     });
   };
 

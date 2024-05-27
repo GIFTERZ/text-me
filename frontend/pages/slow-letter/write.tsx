@@ -40,11 +40,11 @@ function Write() {
   } = useSlowLetterInfo();
 
   useEffect(() => {
-    if (getLetterType() == "email" && !email) {
+    if (getLetterType() === "email" && !email) {
       router.push("/slow-letter/get-info");
     }
     if (
-      getLetterType() == "post" &&
+      getLetterType() === "post" &&
       !(
         receiverName &&
         zonecode &&
@@ -58,7 +58,7 @@ function Write() {
   });
 
   useEffect(() => {
-    if (getLetterType() == "post") {
+    if (getLetterType() === "post") {
       setProcess(PROCESS.WRITE);
       setPictureUrl("/static/images/room-background.webp");
     }
@@ -88,10 +88,10 @@ function Write() {
           prev={() => router.push("/slow-letter/get-info")}
           next={() => setProcess(PROCESS.COMPLETE)}
           sendLetter={
-            getLetterType() == "post" ? sendLetterByAddress : sendLetterByEmail
+            getLetterType() === "post" ? sendLetterByAddress : sendLetterByEmail
           }
           letterData={
-            getLetterType() == "post"
+            getLetterType() === "post"
               ? {
                   receiverName,
                   zonecode,
@@ -106,7 +106,7 @@ function Write() {
       );
     case PROCESS.COMPLETE:
       return (
-        <BackgroundTemplate>
+        <BackgroundTemplate imageUrl={"/static/images/room-background.webp"}>
           <CardRotator />
           <WriteFinishBox />
         </BackgroundTemplate>

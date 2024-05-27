@@ -8,6 +8,7 @@ import { RightButton } from "../styles/components/Button";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import LoadingContainer from "../components/common/LoadingContainer";
+import DkuContainer from "../components/mypage/DkuContainer";
 
 function Mypage() {
   const router = useRouter();
@@ -35,12 +36,12 @@ function Mypage() {
       <Head>
         <title>마이페이지 - Text me!</title>
       </Head>
-
       <Container>
         <NicknameContainer />
         <Link href={`/${member?.id}`}>내 방으로 가기</Link>
         <Link href={"/"}>다른 사람 방 구경하기</Link>
       </Container>
+      <DkuContainer />
       <RightButton type="button" onClick={logout}>
         로그아웃
       </RightButton>
@@ -53,8 +54,7 @@ export default Mypage;
 const Frame = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-
+  gap: 50px;
   height: 100%;
 
   padding: 70px 30px;

@@ -10,8 +10,8 @@ import { HeaderLayout } from "../../styles/components/Layout";
 import BackHeader from "../common/BackHeader";
 
 interface Props {
-  prev: Function;
-  next: Function;
+  prev: () => void;
+  next: () => void;
 }
 function PreviewCard({ prev, next }: Props) {
   const { pictureUrl, setPictureUrl } = useCardPicture();
@@ -30,9 +30,9 @@ function PreviewCard({ prev, next }: Props) {
       <Head>
         <title>카드 사진 미리보기</title>
       </Head>
-      <BackHeader onBackClick={() => prev()}>
+      <BackHeader onBackClick={prev}>
         <Title>카드 미리보기</Title>
-        <Button props={{ onClick: () => next() }} Style={WhiteRightSquare}>
+        <Button props={{ onClick: next }} Style={WhiteRightSquare}>
           선택
         </Button>
       </BackHeader>

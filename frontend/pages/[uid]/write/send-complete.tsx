@@ -9,7 +9,7 @@ import { useMembers } from "../../../stores/useMembers";
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
 
-export default function index() {
+export default function SendComplete() {
   const userId = useSearchParams().get("uid");
 
   const { pictureUrl } = useCardPicture();

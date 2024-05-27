@@ -12,12 +12,12 @@ import Head from "next/head";
 import LoadingContainer from "../../components/common/LoadingContainer";
 import LettersContainer from "../../components/room/LettersContainer";
 import dynamic from "next/dynamic";
-const AlertModal = dynamic(() => import("../../components/room/AlertModal"));
+import { useLetters } from "../../stores/useLetters";
+import { useLetterView } from "../../stores/useLetterView";
 const SnowFall = dynamic(() => import("react-snowfall"));
 const LetterViewContainer = dynamic(
   () => import("../../components/room/LetterViewContainer")
 );
-const SaveModal = dynamic(() => import("../../components/room/SaveModal"));
 
 const LETTER_NOT_OWN_MESSAGE = "본인의 편지만 열어볼 수 있어요!";
 const LETTER_NOT_ARRIVE_MESSAGE = "아직 편지가 도착하지 않았어요!";
@@ -29,14 +29,22 @@ function Room() {
   const userId = get("uid");
 
   const { roomInfo, getRoomInfo, error, isLoading } = useRoomInfo();
-  const { isCaptureMode, toggleCaptureMode, modalOpen } = useCaptureMode();
-  const { alertModalOpen, alertEmptyLetterModalOpen } = useAlertModal();
+  const { isCaptureMode, toggleCaptureMode } = useCaptureMode();
+
+  const { letters, getLetters } = useLetters();
+  const { open, letter, close } = useLetterView();
 
   useEffect(() => {
     if (userId) {
       getRoomInfo(userId);
     }
-  }, [userId]);
+  }, [userId, getRoomInfo]);
+
+  useEffect(() => {
+    if (roomInfo) {
+      getLetters(roomInfo.id);
+    }
+  }, [roomInfo, getLetters]);
 
   if (isLoading) {
     return <LoadingContainer />;
@@ -46,19 +54,27 @@ function Room() {
     return <ErrorContainer />;
   }
 
+  const confirmOpen = async () => {
+    return Promise.resolve().then(() => {
+      return true;
+    });
+  };
+
   return (
     <>
       <Head>
         <title>{roomInfo?.userName}님의 방 - Text me!</title>
       </Head>
       <Header>
-        <Title>{roomInfo?.userName}'s room</Title>
+        <Title>{roomInfo?.userName}&apos;s room</Title>
         {!isCaptureMode && <ButtonsContainer />}
       </Header>
       <LettersContainer
-        userId={userId}
+        open={open}
+        letters={letters}
         backgroundImage={"/static/images/room-background.webp"}
         defaultCardImage="/static/images/room-default.webp"
+        confirmOpen={confirmOpen}
       />
       <SnowFall speed={[0.5, 0.8]} wind={[-0.5, 1.0]} />
       {!isCaptureMode && (
@@ -69,12 +85,7 @@ function Room() {
           </CTAButton>
         </Link>
       )}
-      <LetterViewContainer />
-      {alertModalOpen && <AlertModal text={LETTER_NOT_OWN_MESSAGE} />}
-      {alertEmptyLetterModalOpen && (
-        <AlertModal text={LETTER_NOT_ARRIVE_MESSAGE} />
-      )}
-      {modalOpen && <SaveModal />}
+      <LetterViewContainer letter={letter} close={close} />
       {isCaptureMode && (
         <CaptureModeButton type="button" onClick={toggleCaptureMode}>
           캡처 모드 종료

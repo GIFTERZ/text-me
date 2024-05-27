@@ -12,7 +12,7 @@ import Compressor from "compressorjs";
 import BackHeader from "../../../components/common/BackHeader";
 import { cardAlt } from "../../../public/static/images/card-alt";
 
-export default function index() {
+export default function SelectCardPicture() {
   const router = useRouter();
   const userId = useSearchParams().get("uid");
   const { setPictureUrl, constCard, setConstCard, setPictureImage } =

@@ -9,7 +9,7 @@ interface Props {
 
 function ShareModal({ close }: Props) {
   const copyLink = () => {
-    const url = location.href;
+    const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
       alert("링크를 복사했습니다.");
     });

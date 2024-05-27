@@ -1,6 +1,6 @@
 import Head from "next/head";
-import React from "react";
-import { FieldErrors, useForm } from "react-hook-form";
+import React, { ReactNode } from "react";
+import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
 import styled from "styled-components";
 import Button from "../../common/button/Button";
 import { GreenRightCorner } from "../../common/button/ButtonStyle";
@@ -9,26 +9,44 @@ import { Frame } from "../../styles/components/Frame";
 import BackHeader from "../common/BackHeader";
 import PreloadCardLink from "../common/PreloadCardLink";
 
+type LetterFormDefault = {
+  contents: string;
+  senderName: string;
+};
+
+type LetterForm =
+  | {
+      [key: string]: string;
+    }
+  | LetterFormDefault;
+
 interface Props {
   prev: Function;
   next: Function;
   sendLetter: Function;
   to: string;
-  letterData: Object;
+  letterData: { [key: string]: string };
+  inputOption?: (register: UseFormRegister<LetterForm>) => ReactNode;
 }
-type LetterForm = {
-  contents: string;
-  senderName: string;
-};
-function WriteLetter({ prev, next, sendLetter, letterData, to }: Props) {
+
+function WriteLetter({
+  prev,
+  next,
+  sendLetter,
+  to,
+  letterData,
+  inputOption = () => <></>,
+}: Props) {
   const { register, handleSubmit } = useForm<LetterForm>();
 
   const { pictureUrl } = useCardPicture();
 
-  const sendData = ({ contents, senderName }: LetterForm) => {
+  const sendData = ({ contents, senderName, ...props }: LetterForm) => {
     const body = {
+      imageUrl: pictureUrl,
       contents,
       senderName,
+      ...props,
       ...letterData,
     };
 
@@ -84,6 +102,7 @@ function WriteLetter({ prev, next, sendLetter, letterData, to }: Props) {
             />
           </FromDiv>
         </LetterContainer>
+        {inputOption(register)}
         <Button props={{ type: "submit" }} Style={GreenRightCorner}>
           보내기
         </Button>
@@ -122,8 +141,7 @@ const LetterContainer = styled.div<{ imgurl: string }>`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 70px;
+  gap: 30px;
 `;
 
 const TextArea = styled.textarea`

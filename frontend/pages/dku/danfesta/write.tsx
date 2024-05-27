@@ -6,11 +6,11 @@ import { useCardPicture } from "../../../stores/useCardPicture";
 import { useSendDanfestaLetter } from "../../../stores/useSendDanfestaLetter";
 import { Frame } from "../../../styles/components/Frame";
 import Head from "next/head";
-import { useMembers } from "../../../stores/useMembers";
 import Link from "next/link";
 import { LeftButton, RightButton } from "../../../styles/components/Button";
 import styled from "styled-components";
-import { useRoomInfo } from "../../../stores/useRoomInfo";
+import { useAlertModal } from "../../../stores/useAlertModal";
+import { useRouter } from "next/router";
 
 const PROCESS = {
   SELECT: "SELECT",
@@ -22,15 +22,17 @@ const PROCESS = {
 function DanfestaWrite() {
   const [process, setProcess] = useState(PROCESS.SELECT);
 
-  const { sendLetter } = useSendDanfestaLetter();
+  const { sendLetter, error } = useSendDanfestaLetter();
   const { pictureUrl } = useCardPicture();
 
-  const { member, getMember } = useMembers();
-  const { roomInfo } = useRoomInfo();
-
+  const { openAlertModal } = useAlertModal();
+  const router = useRouter();
   useEffect(() => {
-    getMember();
-  }, []);
+    error &&
+      openAlertModal(error.response.data.message, () =>
+        router.push("/dku/danfesta")
+      );
+  }, [error]);
 
   switch (process) {
     case PROCESS.SELECT:
@@ -53,11 +55,22 @@ function DanfestaWrite() {
           prev={() => setProcess(PROCESS.SELECT)}
           next={() => setProcess(PROCESS.COMPLETE)}
           sendLetter={sendLetter}
-          letterData={{
-            receiverId: "BC09E4C4E30AD99120565CA8746E6D86",
-            imageUrl: pictureUrl,
+          letterData={{}}
+          to={"익명의 학우"}
+          inputOption={(register) => {
+            return (
+              <ContactLabel>
+                <div>
+                  {"연락처를 남겨 새로운 인연을 만들어보세요 ෆ⸒⸒⸜( ˶'ᵕ'˶)⸝"}
+                  <ContactSpan> * 선택사항</ContactSpan>
+                </div>
+                <ContactInput
+                  {...register("contactInfo")}
+                  placeholder="카카오톡 오픈채팅, 이메일, 인스타그램 etc."
+                />
+              </ContactLabel>
+            );
           }}
-          to={roomInfo?.userName}
         />
       );
 
@@ -71,20 +84,9 @@ function DanfestaWrite() {
           <Container>
             <Title>익명의 학우에게 편지를 보냈어요</Title>
             {pictureUrl && <CardImage src={pictureUrl} />}
-            <div>
-              {member ? (
-                <Link href={`/${member?.id}`}>
-                  <LeftButton>내 방으로 가기 </LeftButton>
-                </Link>
-              ) : (
-                <Link href="/signup">
-                  <LeftButton>내 방 만들기 </LeftButton>
-                </Link>
-              )}
-              <Link href={`/dku/danfesta`}>
-                <RightButton>확인하기</RightButton>
-              </Link>
-            </div>
+            <Link href={`/dku/danfesta`}>
+              <RightButton>확인하기</RightButton>
+            </Link>
           </Container>
         </Frame>
       );
@@ -139,4 +141,24 @@ const CardImage = styled.img`
   border-radius: 10px;
 
   object-fit: cover;
+`;
+
+const ContactLabel = styled.label`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+const ContactSpan = styled.span`
+  color: gray;
+`;
+
+const ContactInput = styled.input`
+  border: solid 1px gray;
+  padding: 6px;
+  border-radius: 4px;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+  }
 `;
