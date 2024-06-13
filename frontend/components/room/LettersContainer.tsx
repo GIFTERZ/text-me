@@ -11,8 +11,8 @@ interface Props {
   letters: LetterInfo[];
   backgroundImage: string;
   defaultCardImage: string;
-  confirmOpen: () => Promise<boolean>;
-  open: (id: number) => void;
+  confirmOpen?: () => Promise<boolean>;
+  open?: (id: number) => void;
 }
 
 function LettersContainer({
@@ -42,16 +42,21 @@ function LettersContainer({
   }
 
   const openLetter = async (id: string) => {
+    if (!open) {
+      return;
+    }
+
     if (!letters[Number(id)]) {
       openAlertModal("아직 편지가 도착하지 않았어요!");
       return;
     }
 
-    const result = await confirmOpen();
-    if (!result) {
-      return;
+    if (confirmOpen) {
+      const result = await confirmOpen();
+      if (!result) {
+        return;
+      }
     }
-
     open(letters[Number(id)].id);
   };
 
