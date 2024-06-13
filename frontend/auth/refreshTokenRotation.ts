@@ -1,7 +1,9 @@
-import { InternalAxiosRequestConfig } from "axios";
+import { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { PATH } from "../constants/api";
-import { getRefreshToken, setRefreshToken } from "./utils";
+import { deleteRefreshToken, getRefreshToken, setRefreshToken } from "./utils";
 import visitorApi from "./visitorApi";
+import { CustomError } from "../types/api";
+import { debounce } from "lodash";
 
 const ACCESS_TOKEN_TIME = 1800_000;
 
@@ -21,20 +23,14 @@ const refreshTokenRotation = () => {
 
   const getNewTokens = async function () {
     const refreshToken = getRefreshToken();
-    await visitorApi
-      .post(PATH.USER.REFRESH, {
-        refreshToken,
-      })
-      .then((res) => {
-        const {
-          data: { accessToken, createdAt, refreshToken },
-        } = res;
-        setAccessToken(accessToken, createdAt);
-        setRefreshToken(refreshToken);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+    if (!refreshToken) {
+      return;
+    }
+
+    return await visitorApi.post(PATH.USER.REFRESH, {
+      refreshToken,
+    });
   };
 
   return {
@@ -42,7 +38,23 @@ const refreshTokenRotation = () => {
       config: InternalAxiosRequestConfig
     ): Promise<InternalAxiosRequestConfig> {
       if (!accessToken || isExpired()) {
-        await getNewTokens();
+        await getNewTokens()
+          .then((res) => {
+            const {
+              data: { accessToken, createdAt, refreshToken },
+            } = res;
+            setAccessToken(accessToken, createdAt);
+            setRefreshToken(refreshToken);
+
+            config.headers.Authorization = `Bearer ${accessToken}`;
+          })
+          .catch((err: AxiosError<CustomError>) => {
+            setAccessToken(null, null);
+            deleteRefreshToken();
+            debounce(() => alert("로그인이 만료되었습니다."), 500);
+          });
+
+        return config;
       }
 
       config.headers.Authorization = `Bearer ${accessToken}`;

@@ -1,18 +1,17 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useLetters } from "../../stores/useLetters";
-import { useLetterView } from "../../stores/useLetterView";
 import MoveNextIcon from "./icons/MoveNextIcon";
 import MovePrevIcon from "./icons/MovePrevIcon";
 
 interface Props {
-  children: ReactNode;
+  id: number;
+  open: (id: number) => void;
 }
 
 type Move = "PREV" | "NEXT";
 
-function LetterViewMove(props: Props) {
-  const { id, open } = useLetterView();
+function LetterViewMove({ id, open }: Props) {
   const { letters } = useLetters();
 
   const getCurrentIndex = () => {
@@ -74,7 +73,6 @@ function LetterViewMove(props: Props) {
       >
         <MovePrevIcon />
       </Button>
-      {props.children}
       <Button
         onClick={() => openMove("NEXT")}
         disabled={isLast()}

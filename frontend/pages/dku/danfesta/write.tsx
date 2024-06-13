@@ -6,12 +6,11 @@ import { useCardPicture } from "../../../stores/useCardPicture";
 import { useSendDanfestaLetter } from "../../../stores/useSendDanfestaLetter";
 import { Frame } from "../../../styles/components/Frame";
 import Head from "next/head";
-import { useMembers } from "../../../stores/useMembers";
 import Link from "next/link";
 import { LeftButton, RightButton } from "../../../styles/components/Button";
 import styled from "styled-components";
-import { useRoomInfo } from "../../../stores/useRoomInfo";
-import { UseFormRegister } from "react-hook-form";
+import { useAlertModal } from "../../../stores/useAlertModal";
+import { useRouter } from "next/router";
 
 const PROCESS = {
   SELECT: "SELECT",
@@ -20,21 +19,20 @@ const PROCESS = {
   COMPLETE: "COMPLETE",
 };
 
-const DANFESTA_USER_ID = process.env.NEXT_PUBLIC_DKU_USERID;
-
 function DanfestaWrite() {
   const [process, setProcess] = useState(PROCESS.SELECT);
 
-  const { sendLetter } = useSendDanfestaLetter();
+  const { sendLetter, error } = useSendDanfestaLetter();
   const { pictureUrl } = useCardPicture();
 
-  const { member, getMember } = useMembers();
-  const { roomInfo, getRoomInfo } = useRoomInfo();
-
+  const { openAlertModal } = useAlertModal();
+  const router = useRouter();
   useEffect(() => {
-    getMember();
-    getRoomInfo(DANFESTA_USER_ID);
-  }, []);
+    error &&
+      openAlertModal(error.response.data.message, () =>
+        router.push("/dku/danfesta")
+      );
+  }, [error]);
 
   switch (process) {
     case PROCESS.SELECT:
@@ -57,10 +55,8 @@ function DanfestaWrite() {
           prev={() => setProcess(PROCESS.SELECT)}
           next={() => setProcess(PROCESS.COMPLETE)}
           sendLetter={sendLetter}
-          letterData={{
-            receiverId: DANFESTA_USER_ID,
-          }}
-          to={roomInfo?.userName}
+          letterData={{}}
+          to={"익명의 학우"}
           inputOption={(register) => {
             return (
               <ContactLabel>
@@ -69,7 +65,7 @@ function DanfestaWrite() {
                   <ContactSpan> * 선택사항</ContactSpan>
                 </div>
                 <ContactInput
-                  {...register("contact")}
+                  {...register("contactInfo")}
                   placeholder="카카오톡 오픈채팅, 이메일, 인스타그램 etc."
                 />
               </ContactLabel>
@@ -88,20 +84,9 @@ function DanfestaWrite() {
           <Container>
             <Title>익명의 학우에게 편지를 보냈어요</Title>
             {pictureUrl && <CardImage src={pictureUrl} />}
-            <div>
-              {member ? (
-                <Link href={`/${member?.id}`}>
-                  <LeftButton>내 방으로 가기 </LeftButton>
-                </Link>
-              ) : (
-                <Link href="/signup">
-                  <LeftButton>내 방 만들기 </LeftButton>
-                </Link>
-              )}
-              <Link href={`/dku/danfesta`}>
-                <RightButton>확인하기</RightButton>
-              </Link>
-            </div>
+            <Link href={`/dku/danfesta`}>
+              <RightButton>확인하기</RightButton>
+            </Link>
           </Container>
         </Frame>
       );

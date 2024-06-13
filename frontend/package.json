@@ -7,21 +7,25 @@
     "build": "next build",
     "start": "cross-env next start -p 3000",
     "lint": "next lint",
-    "deploy": "next build && next export"
+    "deploy": "next build && next export",
+    "update": "rm -rf node_modules/dankook-student-council-login && rm -rf .next && yarn && yarn dev"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^14.0.4",
     "@react-three/drei": "^9.93.0",
     "@react-three/fiber": "^8.15.13",
+    "@types/lodash": "^4.17.4",
     "axios": "^1.2.0",
     "babel-plugin-styled-components": "^2.0.7",
     "compressorjs": "^1.1.1",
     "cross-env": "^7.0.3",
+    "dankook-student-council-login": "^1.0.5",
     "date-fns": "^2.29.3",
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.5",
     "eslint-config-react-app": "^7.0.1",
     "html-to-image": "^1.10.9",
+    "loadash": "^1.0.0",
     "next": "^13.5.6",
     "react": "18.2.0",
     "react-card-flip": "^1.2.0",
@@ -58,5 +62,5 @@
   "msw": {
     "workerDirectory": ""
   },
-  "packageManager": "yarn@4.1.1"
+  "packageManager": "yarn@1.22.22"
 }

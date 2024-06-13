@@ -1,28 +1,22 @@
-import { useSearchParams } from "next/navigation";
-import { useMembers } from "../../stores/useMembers";
 import React, { Fragment, useEffect, useState } from "react";
-import { useLetterView } from "../../stores/useLetterView";
-import { Letter } from "../../types";
-import { useAlertModal } from "../../stores/useAlertModal";
-import { useConfirmModal } from "../../stores/useConfirmModal";
 import { useCaptureMode } from "../../stores/useCaptureMode";
 import { LETTER_PROPS } from "./BackgroundLetterProps";
 import BackgroundLetter from "./BackgroundLetter";
 import uuid from "react-uuid";
 import Head from "next/head";
 import PreloadCardLink from "../common/PreloadCardLink";
+import { LetterInfo } from "../../types";
+
 interface Props {
-  letters: Letter[];
+  letters: LetterInfo[];
   backgroundImage: string;
   defaultCardImage: string;
-  userId: string;
   openLetter: (id: string) => void;
 }
 function Background({
   letters,
   backgroundImage,
   defaultCardImage,
-  userId,
   openLetter,
 }: Props) {
   const { isCaptureMode } = useCaptureMode();

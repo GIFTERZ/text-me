@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import { WhiteLeftButton } from "../../styles/components/Button";
 
 const Default = styled.button`
   display: flex;
@@ -108,6 +107,9 @@ const WhiteRightSquare = styled(Default)`
 `;
 
 export {
+  color,
+  corner,
+  layout,
   Default,
   WhiteLeftSquare,
   GreenRightCorner,

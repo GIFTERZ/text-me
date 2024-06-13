@@ -2,7 +2,6 @@ import { AxiosError } from "axios";
 import { create } from "zustand";
 import { Letter } from "../types";
 import api from "../auth/api";
-import visitorApi from "../auth/visitorApi";
 import { PATH } from "../constants/api";
 
 interface LetterView {
@@ -11,7 +10,6 @@ interface LetterView {
   isLoading: boolean;
   error: AxiosError | null;
   letter: Letter | null;
-  getLetter: () => void;
   open: (id: number) => void;
   close: () => void;
 }
@@ -22,11 +20,10 @@ const useLetterView = create<LetterView>((set, get) => ({
   isLoading: false,
   error: null,
   letter: null,
-  getLetter: async () => {
-    const letterId = get().id;
-    set({ isLoading: true });
+  open: async (id: number) => {
+    set({ isOpened: true, id, isLoading: true });
     await api
-      .get(PATH.LETTER.GET_ONE(letterId))
+      .get(PATH.LETTER.GET_ONE(id))
       .then((res) => {
         set({ letter: res.data, error: null });
       })
@@ -37,8 +34,7 @@ const useLetterView = create<LetterView>((set, get) => ({
         set({ isLoading: false });
       });
   },
-  open: (id: number) => set({ isOpened: true, id: id }),
-  close: () => set({ isOpened: false, id: null }),
+  close: () => set({ isOpened: false, id: null, letter: null }),
 }));
 
 export { useLetterView };

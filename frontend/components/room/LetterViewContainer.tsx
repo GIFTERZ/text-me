@@ -1,42 +1,40 @@
-import React, { useEffect } from "react";
-import { useLetterView } from "../../stores/useLetterView";
-import { Overlay } from "../../styles/components/Modal";
+import React from "react";
 import LetterView from "./LetterView";
-import LetterViewMove from "./LetterViewMove";
 import ReportIcon from "../common/icons/ReportIcon";
 import styled from "styled-components";
-import { useAlertModal } from "../../stores/useAlertModal";
+import { useConfirmModal } from "../../stores/useConfirmModal";
+import { Letter } from "../../types";
 
-function LetterViewContainer() {
-  const { isOpened, id, getLetter, close } = useLetterView();
+interface Props {
+  reportLetter?: (id: number, callback?: () => void) => void;
+  letter: Letter;
+  close: () => void;
+}
 
-  const { openAlertModal } = useAlertModal();
+function LetterViewContainer({ reportLetter, letter, close }: Props) {
+  const { openConfirmModal } = useConfirmModal();
 
-  useEffect(() => {
-    if (id) {
-      getLetter();
+  const confirmReportLetter = async () => {
+    const confirm = await openConfirmModal({
+      content: "편지를 신고하시겠습니까?",
+    });
+
+    if (!confirm) {
+      return;
     }
-  }, [id]);
 
-  if (!isOpened) {
-    return <></>;
-  }
+    reportLetter(letter.id, close);
+  };
 
   return (
     <>
-      <Report
-        type="button"
-        onClick={() => openAlertModal("편지를 신고하시겠습니까?")}
-      >
-        신고
-        <ReportIcon />
-      </Report>
-      <div>
-        <Overlay onClick={close} />
-        <LetterViewMove>
-          <LetterView />
-        </LetterViewMove>
-      </div>
+      {letter && reportLetter && (
+        <Report type="button" onClick={confirmReportLetter}>
+          신고
+          <ReportIcon />
+        </Report>
+      )}
+      <LetterView letter={letter} close={close} />
     </>
   );
 }

@@ -1,16 +1,30 @@
 import Head from "next/head";
-import React from "react";
+import React, { useEffect } from "react";
 import { Frame } from "../../../styles/components/Frame";
 import { Title } from "../../../styles/components/Title";
 import styled from "styled-components";
-import { useLetterView } from "../../../stores/useLetterView";
 import LetterView from "../../../components/room/LetterView";
 import Link from "next/link";
 import { WhiteButton } from "../../../styles/components/Button";
-import MenuIcon from "../../../components/room/icons/MenuIcon";
+import { useMyLetters } from "../../../stores/dku/danfesta/useMyLetters";
+import PostBoxIcon from "../../../components/common/icons/PostBoxIcon";
+import { useLetterView } from "../../../stores/dku/danfesta/useLetterView";
+import { useRouter } from "next/router";
 
 const MyLetter = () => {
-  const { open } = useLetterView();
+  const { letter, close, setLetter } = useLetterView();
+  const { letters, getLetters, error } = useMyLetters();
+  const router = useRouter();
+  useEffect(() => {
+    getLetters();
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      router.push("/dku/danfesta");
+    }
+  }, [error]);
+
   return (
     <>
       <Head>
@@ -21,20 +35,24 @@ const MyLetter = () => {
         <SubTitle>단국대 X Text Me!</SubTitle>
         <Title>열람한 편지함</Title>
         <MenuSpan>
-          <Link href="/mypage">
+          <Link href="/dku/danfesta">
             <WhiteButton type="button">
-              <MenuIcon />
+              <PostBoxIcon />
             </WhiteButton>
           </Link>
         </MenuSpan>
         <LettersContainer>
-          {[1, 2, 3].map((value, index) => (
-            <PreviewDiv key={index} onClick={() => open(1)}>
-              <CardImage src={`/static/images/danfesta-card-${value}.png`} />
+          {letters.length === 0 && <div>열람한 편지가 없어요.</div>}
+          {letters.map((value) => (
+            <PreviewDiv key={value.id} onClick={() => setLetter(value)}>
+              <CardImage src={value.imageUrl} />
             </PreviewDiv>
           ))}
         </LettersContainer>
-        <LetterView />
+        <LetterView
+          letter={letter && { ...letter, receiverName: "익명의 학우" }}
+          close={close}
+        />
       </Frame>
     </>
   );

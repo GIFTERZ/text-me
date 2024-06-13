@@ -35,6 +35,7 @@ text me! </div>***
 ![BackEnd skill set](https://i.imgur.com/ryAPQN0.png)
 
 ## 🔌 Infrastructures
+<img width="935" alt="스크린샷 2024-03-27 오후 8 33 21" src="https://github.com/juy4556/2023-text-me/assets/70626308/0eacfe43-eb77-4b98-84c9-b575cd37f818">
 
 ## 😎 Team GIFTERZ
 
