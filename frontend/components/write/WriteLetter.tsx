@@ -53,13 +53,9 @@ function WriteLetter({
     sendLetter(body, next);
   };
 
-  const validateData = (error: FieldErrors<LetterForm>) => {
-    if (error.contents) {
-      alert(error.contents.message);
-      return;
-    }
-    if (error.senderName) {
-      alert(error.senderName.message);
+  const validateData = (error: FieldErrors) => {
+    for (const e in error) {
+      alert(error[e].message);
       return;
     }
   };

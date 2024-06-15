@@ -1,10 +1,35 @@
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EventDescription from "../../../components/dodream/EventDescription";
 import DoDreamRoom from "../../../components/dodream/Room";
+import { useLetters } from "../../../stores/dku/dodream/useLetters";
 
 const DoDream = () => {
+  const errorRef = useRef<any>();
   const [process, setProcess] = useState("ROOM");
+
+  const { error, getLetters } = useLetters();
+
+  useEffect(() => {
+    errorRef.current = error;
+
+    if (error) {
+      setProcess("DESCRIPTION");
+    } else {
+      setProcess("ROOM");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (errorRef.current) {
+        getLetters();
+      }
+    }, 2000);
+
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <>
       <Head>
@@ -26,12 +51,10 @@ const DoDream = () => {
       {(() => {
         switch (process) {
           case "ROOM":
-            return <DoDreamRoom fallback={() => setProcess("DESCRIPTION")} />;
+            return <DoDreamRoom />;
 
           case "DESCRIPTION":
-            return (
-              <EventDescription loginCallback={() => setProcess("ROOM")} />
-            );
+            return <EventDescription />;
 
           default:
             return <></>;

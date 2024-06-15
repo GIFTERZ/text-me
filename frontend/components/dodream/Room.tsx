@@ -6,20 +6,14 @@ import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { WhiteRightButton } from "../../styles/components/Button";
 import { useLetters } from "../../stores/dku/dodream/useLetters";
-interface Props {
-  fallback: () => void;
-}
-const DoDreamRoom = ({ fallback }: Props) => {
+
+const DoDreamRoom = () => {
   const { letterInfos, getLetters, error } = useLetters();
   const pathname = usePathname();
 
   useEffect(() => {
     getLetters();
-  }, []);
-
-  if (error) {
-    fallback();
-  }
+  }, [getLetters]);
 
   return (
     <>

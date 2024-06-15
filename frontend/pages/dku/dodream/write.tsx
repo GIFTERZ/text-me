@@ -53,7 +53,6 @@ function DoDreamWrite() {
   };
 
   const 웹정보ImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e);
     if (e.target.files) {
       readImage(e.target.files[0], set웹정보Image);
     }
@@ -93,12 +92,11 @@ function DoDreamWrite() {
                   <div>카테고리</div>
                   <Select
                     {...register("category", {
-                      required: {
-                        value: true,
-                        message: "카테고리를 입력해주세요.",
-                      },
+                      validate: (v) =>
+                        v === "SELECT" ? "카테고리를 입력해주세요." : undefined,
                     })}
                   >
+                    <option value={"SELECT"}>== 선택 ==</option>
                     <option value={"EXCHANGE"}>교류</option>
                     <option value={"SAFETY"}>안전</option>
                     <option value={"EDUCATION"}>교육</option>
@@ -108,7 +106,7 @@ function DoDreamWrite() {
                   </Select>
                 </Label>
                 <ImageInputLabel role="button">
-                  웹정보 등록
+                  웹정보 등록 (필수)
                   <ImageInput
                     type="file"
                     accept="image/*"
@@ -131,16 +129,12 @@ function DoDreamWrite() {
                   />
                 )}
                 <ImageInputLabel role="button">
-                  학생회비 납부내역 등록
+                  학생회비 납부내역 등록 (선택)
                   <ImageInput
                     type="file"
                     accept="image/*"
                     aria-hidden
                     {...register("studentCouncilFeeImage", {
-                      required: {
-                        value: true,
-                        message: "학생회비 납부내역 이미지를 등록해주세요.",
-                      },
                       onChange: (e) => 학생회비납부내역ImageChange(e),
                     })}
                   />

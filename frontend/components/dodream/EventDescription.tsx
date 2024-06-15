@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import TextParser from "../../common/TextParser";
 import { useLogin } from "../../stores/dku/useLogin";
 import { useRouter } from "next/router";
-import { useLetters } from "../../stores/dku/danfesta/useLetters";
 const DankookStudentCouncilLogin = dynamic(
   () => import("dankook-student-council-login"),
   {
@@ -13,14 +12,9 @@ const DankookStudentCouncilLogin = dynamic(
   }
 );
 
-interface Props {
-  loginCallback: () => void;
-}
-
-const EventDescription = ({ loginCallback }: Props) => {
+const EventDescription = () => {
   const { getToken } = useLogin();
   const router = useRouter();
-  const { getLetters } = useLetters();
   return (
     <>
       <BackgroundTemplate
@@ -49,7 +43,6 @@ const EventDescription = ({ loginCallback }: Props) => {
                 codeVerifier,
               },
               () => {
-                getLetters(null, loginCallback);
                 router.push("/dku/dodream");
               }
             );
